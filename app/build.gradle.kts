@@ -58,6 +58,8 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
+    implementation("androidx.compose.material:material-icons-extended")
+    implementation("androidx.navigation:navigation-compose:2.8.5")
 
     // 1. Hilt (Chuyển sang dùng ksp xử lý sinh code tự động)
     implementation("com.google.dagger:hilt-android:2.59.2")

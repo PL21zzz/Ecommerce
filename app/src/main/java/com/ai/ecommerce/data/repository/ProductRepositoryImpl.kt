@@ -1,5 +1,6 @@
 package com.ai.ecommerce.data.repository
 
+import com.ai.ecommerce.data.remote.CoffeeDataSource
 import com.ai.ecommerce.data.remote.ProductApiService
 import com.ai.ecommerce.domain.model.Product
 import com.ai.ecommerce.domain.repository.ProductRepository
@@ -10,6 +11,7 @@ class ProductRepositoryImpl @Inject constructor(
 ) : ProductRepository {
 
     override suspend fun getProducts(): List<Product> {
-        return apiService.getProducts()
+        val rawList = apiService.getProducts()
+        return CoffeeDataSource.mapToCoffeeList(rawList)
     }
 }

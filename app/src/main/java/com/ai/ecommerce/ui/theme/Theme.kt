@@ -13,8 +13,8 @@ import androidx.compose.ui.platform.LocalContext
 
 // 1. Cấu hình giao diện tối (Dark Mode)
 private val DarkColorScheme = darkColorScheme(
-    primary = CyanAccent,
-    secondary = DarkBluePrimary,
+    primary = CoffeeDark,
+    secondary = CoffeeOrange,
     background = Color(0xFF0F172A),
     surface = Color(0xFF1E293B),
     onPrimary = Color.Black,
@@ -24,8 +24,8 @@ private val DarkColorScheme = darkColorScheme(
 
 // 2. Cấu hình giao diện sáng (Light Mode)
 private val LightColorScheme = lightColorScheme(
-    primary = DarkBluePrimary,
-    secondary = CyanAccent,
+    primary = CoffeeOrange,
+    secondary = CoffeeDark,
     background = BackgroundLight,
     surface = SurfaceLight,
     onPrimary = Color.White,

@@ -2,21 +2,21 @@ package com.ai.ecommerce.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// 1. Màu chủ đạo (Primary) - Màu xanh dương đậm của thanh TopBar và các khối chính
-val DarkBluePrimary = Color(0xFF0F172A)
+// 1. Màu chủ đạo (Primary) - Màu nâu đà trầm ấm của hạt coffee (Chữ tiêu đề, các mảng lớn)
+val CoffeeDark = Color(0xFF2F2D2C)
 
-// 2. Màu nhấn (Accent/Secondary) - Màu xanh neon/cyan của các nút bấm hành động và icon nổi bật
-val CyanAccent = Color(0xFF06B6D4)
+// 2. Màu nhấn (Secondary/Accent) - Màu cam đất/nâu sáng của nút "Get Started", "Order"
+val CoffeeOrange = Color(0xFFC67C4E)
 
-// 3. Màu nền tổng thể (Background) - Màu xám rất nhạt của nền app phía dưới
-val BackgroundLight = Color(0xFFF8FAFC)
+// 3. Màu nền tổng thể (Background) - Màu trắng kem/xám nhạt mịn màng phía sau các thẻ
+val BackgroundLight = Color(0xFFF9F9F9)
 
-// 4. Màu nền của các thẻ Card (Surface) - Màu trắng tinh của các khối nội dung, ô tìm kiếm
+// 4. Màu nền của các thẻ Card (Surface) - Màu trắng tinh của các ô chứa sản phẩm, ô search
 val SurfaceLight = Color(0xFFFFFFFF)
 
-// 5. Màu chữ (Text) - Ăn theo tone xám đen đậm đà chuyên nghiệp
-val TextPrimary = Color(0xFF1E293B)   // Chữ tiêu đề, tên sản phẩm, chữ to
-val TextSecondary = Color(0xFF64748B) // Chữ mô tả phụ, giá tiền cũ, text nhạt hơn
+// 5. Màu chữ (Text)
+val TextPrimary = Color(0xFF2F2D2C)   // Chữ đen nâu đà đậm (Tên món, giá tiền)
+val TextSecondary = Color(0xFF9B9B9B) // Chữ xám phụ (Mô tả, đánh giá sao nhạt)
 
-// 6. Màu đường viền (Border/Divider) - Màu kẻ sọc mảnh ngăn cách các phần
-val BorderColor = Color(0xFFE2E8F0)
+// 6. Màu đường viền hoặc các nút chọn phụ (Ví dụ nút Pick Up/Deliver)
+val BorderColor = Color(0xFFEAEAEA)
