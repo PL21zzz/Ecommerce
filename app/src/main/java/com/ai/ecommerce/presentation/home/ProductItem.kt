@@ -25,6 +25,7 @@ import com.ai.ecommerce.domain.model.Product
 @Composable
 fun ProductItem(
     product: Product,
+    onAddClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     // Khối tổng của 1 thẻ sản phẩm: Nền trắng (Surface), bo góc 16.dp
@@ -120,7 +121,7 @@ fun ProductItem(
                         color = MaterialTheme.colorScheme.primary, // Tự ăn màu cam đất
                         shape = RoundedCornerShape(8.dp)
                     )
-                    .clickable { /* Sau này xử lý thêm vào giỏ hàng ở đây */ },
+                    .clickable { onAddClick() },
                 contentAlignment = Alignment.Center
             ) {
                 Icon(

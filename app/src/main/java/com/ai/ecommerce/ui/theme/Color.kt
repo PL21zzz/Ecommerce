@@ -20,3 +20,6 @@ val TextSecondary = Color(0xFF9B9B9B) // Chữ xám phụ (Mô tả, đánh giá
 
 // 6. Màu đường viền hoặc các nút chọn phụ (Ví dụ nút Pick Up/Deliver)
 val BorderColor = Color(0xFFEAEAEA)
+
+val CoffeeOrangeLight = Color(0xFFFFF5EE) // Nền nhạt cho Size được chọn
+val RatingYellow = Color(0xFFFBBE21)   // Màu vàng ngôi sao

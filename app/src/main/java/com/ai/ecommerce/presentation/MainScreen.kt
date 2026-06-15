@@ -17,12 +17,19 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.ai.ecommerce.presentation.cart.CartScreen
+import com.ai.ecommerce.presentation.cart.CartViewModel
 import com.ai.ecommerce.presentation.home.HomeScreen
 import com.ai.ecommerce.presentation.home.ProductListViewModel
 import com.ai.ecommerce.presentation.product_detail.ProductDetailScreen
+import com.ai.ecommerce.ui.theme.CoffeeOrange
+import com.ai.ecommerce.ui.theme.TextSecondary
 
 @Composable
-fun MainScreen(productViewModel: ProductListViewModel) {
+fun MainScreen(
+    productViewModel: ProductListViewModel,
+    cartViewModel: CartViewModel
+) {
     // 1. Khởi tạo bộ điều khiển chuyển cảnh (NavController)
     val navController = rememberNavController()
 
@@ -55,10 +62,10 @@ fun MainScreen(productViewModel: ProductListViewModel) {
                             }
                         },
                         colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = Color(0xFFC67C4E),  // Icon Active ăn màu cam đất Coffee
-                            selectedTextColor = Color(0xFFC67C4E),  // Chữ Active ăn màu cam đất Coffee
-                            unselectedIconColor = Color(0xFF9B9B9B),// Icon chưa chọn màu xám nhạt
-                            unselectedTextColor = Color(0xFF9B9B9B),// Chữ chưa chọn màu xám nhạt
+                            selectedIconColor = CoffeeOrange,  // Icon Active ăn màu cam đất Coffee
+                            selectedTextColor = CoffeeOrange,  // Chữ Active ăn màu cam đất Coffee
+                            unselectedIconColor = TextSecondary,// Icon chưa chọn màu xám nhạt
+                            unselectedTextColor = TextSecondary,// Chữ chưa chọn màu xám nhạt
                             indicatorColor = Color.Transparent       // Tắt cái vệt nền tròn mặc định của Google đi cho sạch
                         )
                     )
@@ -73,10 +80,13 @@ fun MainScreen(productViewModel: ProductListViewModel) {
             modifier = Modifier.padding(paddingValues) // Ép cái ruột không được đè lên Footer
         ) {
             composable(Screen.Home.route) {
-                HomeScreen(viewModel = productViewModel, navController)
+                HomeScreen(
+                    viewModel = productViewModel,
+                    cartViewModel = cartViewModel,
+                    navController = navController
+                )
             }
 
-            // Thêm khối này vào trong NavHost của file MainScreen.kt
             composable(
                 route = "detail/{productId}",
                 arguments = listOf(navArgument("productId") { type = NavType.IntType })
@@ -85,7 +95,8 @@ fun MainScreen(productViewModel: ProductListViewModel) {
                 ProductDetailScreen(
                     productId = productId,
                     viewModel = productViewModel,
-                    onBackClick = { navController.popBackStack() } // Bấm mũi tên quay lại trang cũ
+                    cartViewModel = cartViewModel,
+                    onBackClick = { navController.popBackStack() }
                 )
             }
 
@@ -94,7 +105,10 @@ fun MainScreen(productViewModel: ProductListViewModel) {
                 Text(text = "Màn hình Yêu Thích (Đang phát triển)")
             }
             composable(Screen.Cart.route) {
-                Text(text = "Màn hình Giỏ Hàng (Đang phát triển)")
+                CartScreen(
+                    viewModel = cartViewModel,
+                    onBackClick = { navController.popBackStack() }
+                )
             }
             composable(Screen.Activity.route) {
                 Text(text = "Màn hình Lịch sử/Thông báo (Đang phát triển)")

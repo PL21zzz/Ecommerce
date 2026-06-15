@@ -20,21 +20,24 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.ai.ecommerce.presentation.cart.CartViewModel
 import com.ai.ecommerce.presentation.home.ProductListState
 import com.ai.ecommerce.presentation.home.ProductListViewModel
+import com.ai.ecommerce.ui.theme.*
 
 @Composable
 fun ProductDetailScreen(
     productId: Int,
     viewModel: ProductListViewModel,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    cartViewModel: CartViewModel
 ) {
     // Tìm đúng sản phẩm trong ViewModel dựa vào productId truyền sang
     val state = viewModel.state.value
     if (state !is ProductListState.Success) return
     val product = state.products.find { it.id == productId } ?: return
 
-    var selectedSize by remember { mutableStateOf("M") } // Trạng thái chọn Size S, M, L
+    var selectedSize by remember { mutableStateOf("M") }
 
     Scaffold(
         // 1. HEADER PHỤ: Nút quay lại và nút Thả tim
@@ -42,7 +45,7 @@ fun ProductDetailScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color(0xFFF9F9F9))
+                    .background(BackgroundLight)
                     .padding(horizontal = 16.dp, vertical = 16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
@@ -50,16 +53,21 @@ fun ProductDetailScreen(
                 Icon(
                     imageVector = Icons.Default.ArrowBackIosNew,
                     contentDescription = "Back",
-                    tint = Color(0xFF2F2D2C),
+                    tint = TextPrimary,
                     modifier = Modifier
                         .size(24.dp)
                         .clickable { onBackClick() }
                 )
-                Text(text = "Detail", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color(0xFF2F2D2C))
+                Text(
+                    text = "Detail",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = TextPrimary
+                )
                 Icon(
                     imageVector = Icons.Default.FavoriteBorder,
                     contentDescription = "Favorite",
-                    tint = Color(0xFF2F2D2C),
+                    tint = TextPrimary,
                     modifier = Modifier.size(24.dp)
                 )
             }
@@ -68,7 +76,7 @@ fun ProductDetailScreen(
         bottomBar = {
             Surface(
                 shadowElevation = 8.dp,
-                color = Color.White,
+                color = SurfaceLight,
                 shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
             ) {
                 Row(
@@ -79,18 +87,28 @@ fun ProductDetailScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column {
-                        Text(text = "Price", color = Color(0xFF9B9B9B), fontSize = 14.sp)
-                        Text(text = "$ ${product.price}", color = Color(0xFFC67C4E), fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                        Text(text = "Price", color = TextSecondary, fontSize = 14.sp)
+                        Text(
+                            text = "$ ${product.price}",
+                            color = CoffeeOrange,
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold
+                        )
                     }
                     Button(
-                        onClick = { /* Xử lý mua ngay */ },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFC67C4E)),
+                        onClick = { cartViewModel.addToCart(product) },
+                        colors = ButtonDefaults.buttonColors(containerColor = CoffeeOrange),
                         shape = RoundedCornerShape(16.dp),
                         modifier = Modifier
                             .fillMaxWidth(0.7f)
                             .height(56.dp)
                     ) {
-                        Text(text = "Buy Now", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                        Text(
+                            text = "Buy Now",
+                            color = Color.White,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold
+                        )
                     }
                 }
             }
@@ -100,7 +118,7 @@ fun ProductDetailScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFFF9F9F9))
+                .background(BackgroundLight)
                 .padding(paddingValues)
                 .padding(horizontal = 24.dp)
         ) {
@@ -120,35 +138,50 @@ fun ProductDetailScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             // 3. THÔNG TIN TIÊU ĐỀ + ĐÁNH GIÁ
-            Text(text = product.title, fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Color(0xFF2F2D2C))
-            Text(text = product.description, fontSize = 12.sp, color = Color(0xFF9B9B9B))
+            Text(
+                text = product.title,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                color = TextPrimary
+            )
+            Text(text = product.description, fontSize = 12.sp, color = TextSecondary)
 
             Row(
                 modifier = Modifier.padding(vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(imageVector = Icons.Default.Star, contentDescription = "Star", tint = Color(0xFFFBBE21), modifier = Modifier.size(20.dp))
+                Icon(
+                    imageVector = Icons.Default.Star,
+                    contentDescription = "Star",
+                    tint = RatingYellow,
+                    modifier = Modifier.size(20.dp)
+                )
                 Spacer(modifier = Modifier.width(4.dp))
-                Text(text = product.rating.rate.toString(), fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF2F2D2C))
-                Text(text = " (${product.rating.count})", color = Color(0xFF9B9B9B), fontSize = 14.sp)
+                Text(
+                    text = product.rating.rate.toString(),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                    color = TextPrimary
+                )
+                Text(text = " (${product.rating.count})", color = TextSecondary, fontSize = 14.sp)
             }
 
-            Divider(color = Color(0xFFEAEAEA), thickness = 1.dp)
+            Divider(color = BorderColor, thickness = 1.dp)
 
             // PHẦN MÔ TẢ (Description)
             Spacer(modifier = Modifier.height(16.dp))
-            Text(text = "Description", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color(0xFF2F2D2C))
+            Text(text = "Description", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = TextPrimary)
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = "A premium blend coffee crafted from high-quality beans, delivering a rich and velvety texture that satisfies your caffeine cravings with a perfect balanced aroma.",
                 fontSize = 14.sp,
-                color = Color(0xFF9B9B9B),
+                color = TextSecondary,
                 lineHeight = 20.sp
             )
 
             // 4. KHỐI CHỌN SIZE (S, M, L)
             Spacer(modifier = Modifier.height(24.dp))
-            Text(text = "Size", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color(0xFF2F2D2C))
+            Text(text = "Size", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = TextPrimary)
             Spacer(modifier = Modifier.height(12.dp))
 
             Row(
@@ -162,7 +195,7 @@ fun ProductDetailScreen(
                             .weight(1f)
                             .height(44.dp)
                             .background(
-                                color = if (isSelected) Color(0xFFFFF5EE) else Color.White,
+                                color = if (isSelected) CoffeeOrangeLight else SurfaceLight,
                                 shape = RoundedCornerShape(12.dp)
                             )
                             .clickable { selectedSize = size }
@@ -177,7 +210,7 @@ fun ProductDetailScreen(
                             shape = RoundedCornerShape(12.dp),
                             border = androidx.compose.foundation.BorderStroke(
                                 width = 1.dp,
-                                color = if (isSelected) Color(0xFFC67C4E) else Color(0xFFEAEAEA)
+                                color = if (isSelected) CoffeeOrange else BorderColor
                             ),
                             color = Color.Transparent,
                             modifier = Modifier.fillMaxSize()
@@ -187,7 +220,7 @@ fun ProductDetailScreen(
                                     text = size,
                                     fontSize = 14.sp,
                                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                                    color = if (isSelected) Color(0xFFC67C4E) else Color(0xFF2F2D2C),
+                                    color = if (isSelected) CoffeeOrange else TextPrimary,
                                     textAlign = TextAlign.Center
                                 )
                             }
