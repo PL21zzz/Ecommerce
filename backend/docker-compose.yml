@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  postgres-db:
+    image: postgres:15-alpine
+    container_name: coffee-postgres
+    environment:
+      POSTGRES_USER: phong_coffee
+      POSTGRES_PASSWORD: phong_coffee
+      POSTGRES_DB: coffee_ecommerce_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
