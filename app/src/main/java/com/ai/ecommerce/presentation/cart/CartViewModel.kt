@@ -21,7 +21,9 @@ class CartViewModel @Inject constructor() : ViewModel() {
 
     // Tính toán tiền bạc dựa trên dữ liệu trong giỏ
     val subtotal: Double get() = _cartItems.sumOf { it.product.price * it.quantity }
-    val deliveryFee: Double = 1.0 // Phí ship cố định 1$ theo ảnh mẫu
+    val deliveryFee: Double = 1.0
+
+    val totalItemsCount: Int get() = _cartItems.sumOf { it.quantity }
     val total: Double get() = subtotal + deliveryFee
 
     fun addToCart(product: Product) {

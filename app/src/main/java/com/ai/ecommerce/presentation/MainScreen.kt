@@ -2,6 +2,8 @@ package com.ai.ecommerce.presentation
 
 import android.R.attr.type
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -11,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -47,13 +50,47 @@ fun MainScreen(
                 val currentRoute = navBackStackEntry.value?.destination?.route
 
                 items.forEach { screen ->
+                    val selected = currentRoute == screen.route
+
                     NavigationBarItem(
-                        icon = { Icon(imageVector = screen.icon, contentDescription = screen.title) },
-                        label = { Text(text = screen.title) },
-                        selected = currentRoute == screen.route, // Nếu đúng route thì sáng lên
+                        icon = {
+                            // Kiểm tra xem icon hiện tại có phải là icon Giỏ hàng hay không
+                            if (screen is Screen.Cart) {
+                                // Lấy tổng số lượng sản phẩm thật từ ViewModel lên
+                                val cartCount = cartViewModel.totalItemsCount
+
+                                BadgedBox(
+                                    badge = {
+                                        // Chỉ hiển thị số khi trong giỏ hàng thực sự có đồ (lớn hơn 0)
+                                        if (cartCount > 0) {
+                                            Badge(
+                                                containerColor = CoffeeOrange, // Cho ăn theo màu cam đất chuẩn của bạn
+                                                contentColor = Color.White
+                                            ) {
+                                                Text(text = cartCount.toString(), fontSize = 10.sp)
+                                            }
+                                        }
+                                    }
+                                ) {
+                                    Icon(
+                                        imageVector = screen.icon,
+                                        contentDescription = screen.title,
+                                        tint = if (selected) CoffeeOrange else TextSecondary
+                                    )
+                                }
+                            } else {
+                                // Các icon khác (Home, Likes, Activity) thì vẽ bình thường không cần Badge
+                                Icon(
+                                    imageVector = screen.icon,
+                                    contentDescription = screen.title,
+                                    tint = if (selected) CoffeeOrange else TextSecondary
+                                )
+                            }
+                        },
+                        label = { Text(text = screen.title, color = if (selected) CoffeeOrange else TextSecondary) },
+                        selected = selected,
                         onClick = {
                             if (currentRoute != screen.route) {
-                                // Lệnh điều hướng nhảy màn hình của Google Navigation
                                 navController.navigate(screen.route) {
                                     popUpTo(navController.graph.startDestinationId) { saveState = true }
                                     launchSingleTop = true
@@ -62,11 +99,7 @@ fun MainScreen(
                             }
                         },
                         colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = CoffeeOrange,  // Icon Active ăn màu cam đất Coffee
-                            selectedTextColor = CoffeeOrange,  // Chữ Active ăn màu cam đất Coffee
-                            unselectedIconColor = TextSecondary,// Icon chưa chọn màu xám nhạt
-                            unselectedTextColor = TextSecondary,// Chữ chưa chọn màu xám nhạt
-                            indicatorColor = Color.Transparent       // Tắt cái vệt nền tròn mặc định của Google đi cho sạch
+                            indicatorColor = Color.Transparent
                         )
                     )
                 }
@@ -100,14 +133,20 @@ fun MainScreen(
                 )
             }
 
-            // Tạm thời các trang khác để trống, làm cái text giữ chỗ, hôm sau code cụ thể từng trang
             composable(Screen.Wishlist.route) {
                 Text(text = "Màn hình Yêu Thích (Đang phát triển)")
             }
             composable(Screen.Cart.route) {
                 CartScreen(
                     viewModel = cartViewModel,
-                    onBackClick = { navController.popBackStack() }
+                    onBackClick = { navController.popBackStack() },
+                    onGoShoppingClick = {
+                        navController.navigate(Screen.Home.route) {
+                            popUpTo(navController.graph.startDestinationId) { saveState = true }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }
                 )
             }
             composable(Screen.Activity.route) {
