@@ -20,6 +20,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.ai.ecommerce.presentation.activity.ActivityScreen
 import com.ai.ecommerce.presentation.cart.CartScreen
 import com.ai.ecommerce.presentation.cart.CartViewModel
 import com.ai.ecommerce.presentation.home.HomeScreen
@@ -161,7 +162,7 @@ fun MainScreen(
             }
             // activity
             composable(Screen.Activity.route) {
-                Text(text = "Màn hình Lịch sử/Thông báo (Đang phát triển)")
+                ActivityScreen()
             }
         }
     }
