@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.ai.ecommerce.presentation.cart.CartViewModel
 import com.ai.ecommerce.presentation.home.components.*
+import com.ai.ecommerce.presentation.wishlist.WishlistViewModel
 import com.ai.ecommerce.ui.theme.BackgroundLight
 import com.ai.ecommerce.ui.theme.CoffeeOrange
 
@@ -24,6 +25,7 @@ import com.ai.ecommerce.ui.theme.CoffeeOrange
 fun HomeScreen(
     viewModel: ProductListViewModel,
     cartViewModel: CartViewModel,
+    wishlistViewModel: WishlistViewModel,
     navController: NavController
 ) {
     val state = viewModel.state.value
@@ -63,6 +65,8 @@ fun HomeScreen(
                     items(state.products) { product ->
                         ProductItem(
                             product = product,
+                            isFavorited = wishlistViewModel.isFavorited(product.id),
+                            onFavoriteClick = { wishlistViewModel.toggleWishlist(product) },
                             onAddClick = { cartViewModel.addToCart(product) },
                             modifier = Modifier.clickable {
                                 navController.navigate("detail/${product.id}")

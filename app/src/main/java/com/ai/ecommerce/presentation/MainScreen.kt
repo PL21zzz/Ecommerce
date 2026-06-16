@@ -25,13 +25,15 @@ import com.ai.ecommerce.presentation.cart.CartViewModel
 import com.ai.ecommerce.presentation.home.HomeScreen
 import com.ai.ecommerce.presentation.home.ProductListViewModel
 import com.ai.ecommerce.presentation.product_detail.ProductDetailScreen
+import com.ai.ecommerce.presentation.wishlist.WishlistViewModel
 import com.ai.ecommerce.ui.theme.CoffeeOrange
 import com.ai.ecommerce.ui.theme.TextSecondary
 
 @Composable
 fun MainScreen(
     productViewModel: ProductListViewModel,
-    cartViewModel: CartViewModel
+    cartViewModel: CartViewModel,
+    wishlistViewModel: WishlistViewModel
 ) {
     // 1. Khởi tạo bộ điều khiển chuyển cảnh (NavController)
     val navController = rememberNavController()
@@ -109,17 +111,27 @@ fun MainScreen(
         // 3. VÙNG RUỘT THAY ĐỔI (NavHost): Nơi hoán đổi giao diện dựa trên route
         NavHost(
             navController = navController,
-            startDestination = Screen.Home.route, // Mặc định mở app là vào trang Home
-            modifier = Modifier.padding(paddingValues) // Ép cái ruột không được đè lên Footer
+            startDestination = Screen.Home.route,
+            modifier = Modifier.padding(paddingValues)
         ) {
+            // home
             composable(Screen.Home.route) {
                 HomeScreen(
                     viewModel = productViewModel,
                     cartViewModel = cartViewModel,
+                    wishlistViewModel = wishlistViewModel, // <-- Truyền sang cho Home dùng
                     navController = navController
                 )
             }
-
+            // wishlist
+            composable(Screen.Wishlist.route) {
+                com.ai.ecommerce.presentation.wishlist.WishlistScreen(
+                    wishlistViewModel = wishlistViewModel,
+                    cartViewModel = cartViewModel,
+                    navController = navController
+                )
+            }
+            // product detail
             composable(
                 route = "detail/{productId}",
                 arguments = listOf(navArgument("productId") { type = NavType.IntType })
@@ -129,13 +141,11 @@ fun MainScreen(
                     productId = productId,
                     viewModel = productViewModel,
                     cartViewModel = cartViewModel,
+                    wishlistViewModel = wishlistViewModel,
                     onBackClick = { navController.popBackStack() }
                 )
             }
-
-            composable(Screen.Wishlist.route) {
-                Text(text = "Màn hình Yêu Thích (Đang phát triển)")
-            }
+            // cart
             composable(Screen.Cart.route) {
                 CartScreen(
                     viewModel = cartViewModel,
@@ -149,6 +159,7 @@ fun MainScreen(
                     }
                 )
             }
+            // activity
             composable(Screen.Activity.route) {
                 Text(text = "Màn hình Lịch sử/Thông báo (Đang phát triển)")
             }
