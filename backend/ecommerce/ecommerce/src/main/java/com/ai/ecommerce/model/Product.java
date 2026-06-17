@@ -1,6 +1,12 @@
 package com.ai.ecommerce.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
@@ -17,4 +23,8 @@ public class Product {
     private Double price;
     private String image;
     private Double rating;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 }

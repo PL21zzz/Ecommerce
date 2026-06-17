@@ -17,7 +17,6 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
-// 1. Tạo Class đệm nằm độc lập ở ngoài để hứng cấu trúc phẳng từ Java
 @Serializable
 data class JavaProduct(
     val id: Int,
@@ -25,45 +24,77 @@ data class JavaProduct(
     val price: Double,
     val description: String,
     val image: String,
-    val rating: Double // Hứng đúng con số thực 4.8 từ Java gửi sang
+    val rating: Double,
+    val category: JavaCategory? = null // Nhận diện object danh mục lồng từ Java gửi sang
+)
+
+@Serializable
+data class JavaCategory(
+    val id: Int,
+    val name: String
 )
 
 class ProductListViewModel : ViewModel() {
 
     private val client = HttpClient {
         install(ContentNegotiation) {
-            json(Json {
-                ignoreUnknownKeys = true // Bỏ qua nếu lệch các trường khác
-            })
+            json(Json { ignoreUnknownKeys = true })
         }
     }
 
     private val _state = mutableStateOf<ProductListState>(ProductListState.Loading)
     val state: State<ProductListState> = _state
 
+    // Lưu danh sách danh mục để đổ lên thanh trượt giao diện
+    private val _categories = mutableStateOf<List<JavaCategory>>(emptyList())
+    val categories: State<List<JavaCategory>> = _categories
+
+    // Lưu danh mục hiện tại đang được chọn (Mặc định null nghĩa là chọn "All")
+    private val _selectedCategoryId = mutableStateOf<Int?>(null)
+    val selectedCategoryId: State<Int?> = _selectedCategoryId
+
     init {
-        fetchProducts()
+        fetchCategories()
+        fetchProducts(null) // Ban đầu load hết toàn bộ sản phẩm
     }
 
-    fun fetchProducts() {
+    private fun fetchCategories() {
+        viewModelScope.launch {
+            try {
+                val fetchedCats = withContext(Dispatchers.IO) {
+                    client.get("http://172.24.96.1:8080/api/categories").body<List<JavaCategory>>()
+                }
+                _categories.value = fetchedCats
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    fun fetchProducts(categoryId: Int?) {
+        _selectedCategoryId.value = categoryId
         viewModelScope.launch {
             _state.value = ProductListState.Loading
             try {
-                // 2. Ktor gọi API lấy danh sách phẳng dạng JavaProduct về
-                val javaProducts = withContext(Dispatchers.IO) {
-                    client.get("http://172.24.96.1:8080/api/products").body<List<JavaProduct>>()
+                // Xây dựng URL động: Nếu có categoryId thì bồi thêm param, không thì lấy hết
+                val url = if (categoryId != null) {
+                    "http://172.24.96.1:8080/api/products?categoryId=$categoryId"
+                } else {
+                    "http://172.24.96.1:8080/api/products"
                 }
 
-                // 3. Tự chuyển đổi cấu trúc phẳng thành Object lồng nhau mà UI Android cũ đang cần
+                val javaProducts = withContext(Dispatchers.IO) {
+                    client.get(url).body<List<JavaProduct>>()
+                }
+
                 val realProducts = javaProducts.map { javaProd ->
                     Product(
                         id = javaProd.id,
                         title = javaProd.title,
                         price = javaProd.price,
                         description = javaProd.description,
-                        category = "Coffee", // Tự bù trường category
+                        category = javaProd.category?.name ?: "Coffee", // Lấy tên thật từ DB Java
                         image = javaProd.image,
-                        // Tự đóng gói con số 4.8 thành Object Rating(rate=4.8, count=120) cho UI cũ đọc mượt mà
                         rating = Rating(rate = javaProd.rating, count = 120)
                     )
                 }

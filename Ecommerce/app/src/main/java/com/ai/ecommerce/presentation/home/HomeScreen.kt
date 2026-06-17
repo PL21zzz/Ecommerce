@@ -29,6 +29,9 @@ fun HomeScreen(
     navController: NavController
 ) {
     val state = viewModel.state.value
+    // Lấy danh sách categories và ID đang được chọn từ ViewModel
+    val categoriesList = viewModel.categories.value
+    val selectedId = viewModel.selectedCategoryId.value
 
     Box(
         modifier = Modifier
@@ -57,10 +60,19 @@ fun HomeScreen(
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    // Gọi các Component độc lập từ thư mục components ra lắp ráp
                     item(span = { GridItemSpan(2) }) { HomeHeader() }
                     item(span = { GridItemSpan(2) }) { HomeBanner() }
-                    item(span = { GridItemSpan(2) }) { CategoryChips() }
+
+                    // Nạp dữ liệu thật và cấu hình lọc sự kiện khi bấm nút
+                    item(span = { GridItemSpan(2) }) {
+                        CategoryChips(
+                            categoriesFromDb = categoriesList,
+                            selectedId = selectedId,
+                            onCategorySelected = { targetId ->
+                                viewModel.fetchProducts(targetId)
+                            }
+                        )
+                    }
 
                     items(state.products) { product ->
                         ProductItem(

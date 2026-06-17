@@ -5,21 +5,24 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ai.ecommerce.model.Product;
 import com.ai.ecommerce.repository.ProductRepository;
 
 @RestController
-@RequestMapping("/api/products") // Đường dẫn API mà Android đang gọi
+@RequestMapping("/api/products")
 public class ProductController {
 
     @Autowired
     private ProductRepository productRepository;
 
-    // API hứng lệnh GET từ Android để lấy 10 ly Coffee trong Postgres đổ về
     @GetMapping
-    public List<Product> getAllProducts() {
+    public List<Product> getProducts(@RequestParam(required = false) Long categoryId) {
+        if (categoryId != null) {
+            return productRepository.findByCategoryId(categoryId);
+        }
         return productRepository.findAll();
     }
 }

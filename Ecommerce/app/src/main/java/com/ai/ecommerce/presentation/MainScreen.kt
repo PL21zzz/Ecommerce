@@ -26,6 +26,7 @@ import com.ai.ecommerce.presentation.cart.CartViewModel
 import com.ai.ecommerce.presentation.home.HomeScreen
 import com.ai.ecommerce.presentation.home.ProductListViewModel
 import com.ai.ecommerce.presentation.product_detail.ProductDetailScreen
+import com.ai.ecommerce.presentation.wishlist.WishlistScreen
 import com.ai.ecommerce.presentation.wishlist.WishlistViewModel
 import com.ai.ecommerce.ui.theme.CoffeeOrange
 import com.ai.ecommerce.ui.theme.TextSecondary
@@ -126,7 +127,8 @@ fun MainScreen(
             }
             // wishlist
             composable(Screen.Wishlist.route) {
-                com.ai.ecommerce.presentation.wishlist.WishlistScreen(
+                WishlistScreen(
+                    productListViewModel = productViewModel,
                     wishlistViewModel = wishlistViewModel,
                     cartViewModel = cartViewModel,
                     navController = navController
