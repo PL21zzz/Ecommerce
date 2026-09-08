@@ -11,6 +11,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -29,9 +30,11 @@ fun HomeScreen(
     navController: NavController
 ) {
     val state = viewModel.state.value
-    // Lấy danh sách categories và ID đang được chọn từ ViewModel
     val categoriesList = viewModel.categories.value
     val selectedId = viewModel.selectedCategoryId.value
+
+    // Đọc từ khóa tìm kiếm hiện tại từ ViewModel lên
+    val searchQuery = viewModel.searchQuery.value
 
     Box(
         modifier = Modifier
@@ -53,6 +56,17 @@ fun HomeScreen(
                 )
             }
             is ProductListState.Success -> {
+                // Tự động lọc danh sách sản phẩm theo từ khóa tìm kiếm (Không phân biệt chữ hoa/thường)
+                val filteredProducts = remember(state.products, searchQuery) {
+                    if (searchQuery.isEmpty()) {
+                        state.products
+                    } else {
+                        state.products.filter { product ->
+                            product.title.contains(searchQuery, ignoreCase = true)
+                        }
+                    }
+                }
+
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
                     modifier = Modifier.fillMaxSize(),
@@ -60,10 +74,16 @@ fun HomeScreen(
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    item(span = { GridItemSpan(2) }) { HomeHeader() }
+                    // Truyền từ khóa và sự kiện thay đổi văn bản vào HomeHeader
+                    item(span = { GridItemSpan(2) }) {
+                        HomeHeader(
+                            searchQuery = searchQuery,
+                            onSearchQueryChange = { text -> viewModel.changeSearchQuery(text) }
+                        )
+                    }
+
                     item(span = { GridItemSpan(2) }) { HomeBanner() }
 
-                    // Nạp dữ liệu thật và cấu hình lọc sự kiện khi bấm nút
                     item(span = { GridItemSpan(2) }) {
                         CategoryChips(
                             categoriesFromDb = categoriesList,
@@ -74,7 +94,8 @@ fun HomeScreen(
                         )
                     }
 
-                    items(state.products) { product ->
+                    // Đổi từ state.products sang hiển thị danh sách filteredProducts đã được lọc dữ liệu
+                    items(filteredProducts) { product ->
                         ProductItem(
                             product = product,
                             isFavorited = wishlistViewModel.isFavorited(product.id),

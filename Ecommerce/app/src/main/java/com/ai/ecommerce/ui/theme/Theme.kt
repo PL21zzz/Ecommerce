@@ -11,27 +11,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
-// 1. Cấu hình giao diện tối (Dark Mode)
 private val DarkColorScheme = darkColorScheme(
-    primary = CoffeeDark,
-    secondary = CoffeeOrange,
-    background = Color(0xFF0F172A),
-    surface = Color(0xFF1E293B),
-    onPrimary = Color.Black,
+    primary = CoffeeOrange,
+    secondary = CoffeeDark,
+    background = Color(0xFF121212),
+    surface = Color(0xFF1E1E1E),
+    onPrimary = Color.White,
     onBackground = Color.White,
-    onSurface = Color.White
+    onSurface = Color.White,
+    outline = Color(0xFF333333)
 )
 
-// 2. Cấu hình giao diện sáng (Light Mode)
 private val LightColorScheme = lightColorScheme(
     primary = CoffeeOrange,
     secondary = CoffeeDark,
-    background = BackgroundLight,
-    surface = SurfaceLight,
+    background = Color(0xFFF9F9F9),
+    surface = Color(0xFFFFFFFF),
     onPrimary = Color.White,
-    onBackground = TextPrimary,
-    onSurface = TextPrimary,
-    outline = BorderColor
+    onBackground = Color(0xFF2F2D2C),
+    onSurface = Color(0xFF2F2D2C),
+    outline = Color(0xFFEAEAEA)
 )
 
 @Composable
@@ -45,7 +44,6 @@ fun EcommerceTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }

@@ -2,7 +2,15 @@ package com.ai.ecommerce.presentation.activity
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -14,31 +22,40 @@ import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Place
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.ai.ecommerce.presentation.activity.components.SettingRowItem
 import com.ai.ecommerce.presentation.activity.components.SettingsGroup
 import com.ai.ecommerce.presentation.activity.components.UserProfileCard
-import com.ai.ecommerce.ui.theme.BackgroundLight
+import com.ai.ecommerce.presentation.auth.AuthUser
 import com.ai.ecommerce.ui.theme.BorderColor
 import com.ai.ecommerce.ui.theme.TextPrimary
 
 @Composable
-fun ActivityScreen() {
-    var isDarkMode by remember { mutableStateOf(false) }
-
+fun ActivityScreen(
+    navController: NavController,
+    currentUser: AuthUser,
+    isDarkMode: Boolean,
+    onToggleDarkMode: (Boolean) -> Unit,
+    onLogout: () -> Unit
+) {
     Scaffold(
         topBar = {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(BackgroundLight)
+                    .background(MaterialTheme.colorScheme.background)
                     .padding(16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
@@ -48,7 +65,7 @@ fun ActivityScreen() {
                 Icon(Icons.Default.Search, contentDescription = null, tint = TextPrimary)
             }
         },
-        containerColor = BackgroundLight
+        containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -58,39 +75,42 @@ fun ActivityScreen() {
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // 1. Khối thông tin thẻ cá nhân
-            UserProfileCard()
+            UserProfileCard(name = currentUser.name, email = currentUser.email)
 
-            // 2. Nhóm cấu hình Tài khoản
             SettingsGroup(title = "Account") {
-                SettingRowItem(icon = Icons.Default.Person, label = "Personal Info")
-                Divider(color = BorderColor, thickness = 0.5.dp, modifier = Modifier.padding(horizontal = 16.dp))
-                SettingRowItem(icon = Icons.Default.History, label = "Order History")
+                SettingRowItem(
+                    icon = Icons.Default.Person,
+                    label = "Personal Info",
+                    trailingText = currentUser.email
+                )
+                HorizontalDivider(color = BorderColor, thickness = 0.5.dp, modifier = Modifier.padding(horizontal = 16.dp))
+                SettingRowItem(
+                    icon = Icons.Default.History,
+                    label = "Order History",
+                    onClick = { navController.navigate("my_orders") }
+                )
             }
 
-            // 3. Nhóm cấu hình Tùy chọn
             SettingsGroup(title = "Preferences") {
                 SettingRowItem(icon = Icons.Default.Language, label = "Language", trailingText = "English")
-                Divider(color = BorderColor, thickness = 0.5.dp, modifier = Modifier.padding(horizontal = 16.dp))
+                HorizontalDivider(color = BorderColor, thickness = 0.5.dp, modifier = Modifier.padding(horizontal = 16.dp))
                 SettingRowItem(
                     icon = Icons.Default.DarkMode,
                     label = "Dark Mode",
                     showSwitch = true,
                     switchChecked = isDarkMode,
-                    onSwitchChange = { isDarkMode = it }
+                    onSwitchChange = { onToggleDarkMode(it) }
                 )
             }
 
-            // 4. Nhóm cấu hình Bảo mật
             SettingsGroup(title = "Security") {
                 SettingRowItem(icon = Icons.Default.Lock, label = "Change Password")
             }
 
-            // 5. Nút Đăng xuất màu đỏ nổi bật dưới đáy
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { /* Xử lý Đăng xuất */ }
+                    .clickable { onLogout() }
                     .padding(vertical = 24.dp),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically

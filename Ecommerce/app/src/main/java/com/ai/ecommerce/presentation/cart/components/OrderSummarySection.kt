@@ -1,17 +1,9 @@
 package com.ai.ecommerce.presentation.cart.components
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CreditCard
-import androidx.compose.material.icons.filled.KeyboardArrowRight
-import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -31,25 +23,9 @@ fun OrderSummarySection(
 
         SummaryRow("Subtotal", "$ ${String.format("%.2f", subtotal)}")
         SummaryRow("Delivery Fee", "$ ${String.format("%.2f", deliveryFee)}")
-        Divider(Modifier.padding(vertical = 12.dp), color = BorderColor)
+        HorizontalDivider(Modifier.padding(vertical = 12.dp), color = BorderColor)
         SummaryRow("Total", "$ ${String.format("%.2f", total)}", isTotal = true)
-
         Spacer(modifier = Modifier.height(16.dp))
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(SurfaceLight, RoundedCornerShape(16.dp))
-                .border(1.dp, BorderColor, RoundedCornerShape(16.dp))
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(Icons.Default.CreditCard, null, tint = CoffeeOrange)
-            Spacer(Modifier.width(12.dp))
-            Text("Card: ...4242", modifier = Modifier.weight(1f), color = TextPrimary, fontWeight = FontWeight.Medium)
-            Icon(Icons.Default.KeyboardArrowRight, null, tint = TextPrimary)
-        }
-        Spacer(modifier = Modifier.height(100.dp))
     }
 }
 

@@ -48,7 +48,7 @@ fun CartItemRow(
         Spacer(Modifier.width(12.dp))
         Column(modifier = Modifier.weight(1f)) {
             Text(item.product.title, fontWeight = FontWeight.Bold, color = TextPrimary, fontSize = 16.sp)
-            Text(item.product.description, color = TextSecondary, fontSize = 12.sp)
+            Text("Size ${item.size} - ${item.product.description}", color = TextSecondary, fontSize = 12.sp)
             Spacer(Modifier.height(8.dp))
             Text("$ ${item.product.price}", color = CoffeeOrange, fontWeight = FontWeight.Bold, fontSize = 16.sp)
         }

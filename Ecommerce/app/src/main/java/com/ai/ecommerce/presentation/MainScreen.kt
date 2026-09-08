@@ -1,10 +1,10 @@
 package com.ai.ecommerce.presentation
 
-import android.R.attr.type
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
@@ -21,6 +21,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.ai.ecommerce.presentation.activity.ActivityScreen
+import com.ai.ecommerce.presentation.activity.MyOrdersScreen
+import com.ai.ecommerce.presentation.auth.AuthScreen
+import com.ai.ecommerce.presentation.auth.AuthViewModel
 import com.ai.ecommerce.presentation.cart.CartScreen
 import com.ai.ecommerce.presentation.cart.CartViewModel
 import com.ai.ecommerce.presentation.home.HomeScreen
@@ -35,21 +38,30 @@ import com.ai.ecommerce.ui.theme.TextSecondary
 fun MainScreen(
     productViewModel: ProductListViewModel,
     cartViewModel: CartViewModel,
-    wishlistViewModel: WishlistViewModel
+    wishlistViewModel: WishlistViewModel,
+    authViewModel: AuthViewModel,
+    isDarkMode: Boolean,
+    onToggleDarkMode: (Boolean) -> Unit
 ) {
-    // 1. Khởi tạo bộ điều khiển chuyển cảnh (NavController)
-    val navController = rememberNavController()
+    val currentUser = authViewModel.currentUser.value
 
-    // Danh sách 4 nút bấm dưới Footer tương ứng với 4 màn hình
+    if (currentUser == null) {
+        AuthScreen(
+            uiState = authViewModel.uiState.value,
+            onLogin = authViewModel::login,
+            onRegister = authViewModel::register
+        )
+        return
+    }
+
+    val navController = rememberNavController()
     val items = listOf(Screen.Home, Screen.Wishlist, Screen.Cart, Screen.Activity)
 
-    // 2. Dùng Scaffold để dựng Giàn Giáo giữ cố định Footer (bottomBar)
     Scaffold(
         bottomBar = {
             NavigationBar(
-                containerColor = Color.White // Nền trắng tinh cho Footer giống ảnh mẫu
+                containerColor = MaterialTheme.colorScheme.surface
             ) {
-                // Lấy thông tin xem hiện tại người dùng đang đứng ở màn hình nào
                 val navBackStackEntry = navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry.value?.destination?.route
 
@@ -58,17 +70,14 @@ fun MainScreen(
 
                     NavigationBarItem(
                         icon = {
-                            // Kiểm tra xem icon hiện tại có phải là icon Giỏ hàng hay không
                             if (screen is Screen.Cart) {
-                                // Lấy tổng số lượng sản phẩm thật từ ViewModel lên
                                 val cartCount = cartViewModel.totalItemsCount
 
                                 BadgedBox(
                                     badge = {
-                                        // Chỉ hiển thị số khi trong giỏ hàng thực sự có đồ (lớn hơn 0)
                                         if (cartCount > 0) {
                                             Badge(
-                                                containerColor = CoffeeOrange, // Cho ăn theo màu cam đất chuẩn của bạn
+                                                containerColor = CoffeeOrange,
                                                 contentColor = Color.White
                                             ) {
                                                 Text(text = cartCount.toString(), fontSize = 10.sp)
@@ -83,7 +92,6 @@ fun MainScreen(
                                     )
                                 }
                             } else {
-                                // Các icon khác (Home, Likes, Activity) thì vẽ bình thường không cần Badge
                                 Icon(
                                     imageVector = screen.icon,
                                     contentDescription = screen.title,
@@ -110,22 +118,19 @@ fun MainScreen(
             }
         }
     ) { paddingValues ->
-        // 3. VÙNG RUỘT THAY ĐỔI (NavHost): Nơi hoán đổi giao diện dựa trên route
         NavHost(
             navController = navController,
             startDestination = Screen.Home.route,
             modifier = Modifier.padding(paddingValues)
         ) {
-            // home
             composable(Screen.Home.route) {
                 HomeScreen(
                     viewModel = productViewModel,
                     cartViewModel = cartViewModel,
-                    wishlistViewModel = wishlistViewModel, // <-- Truyền sang cho Home dùng
+                    wishlistViewModel = wishlistViewModel,
                     navController = navController
                 )
             }
-            // wishlist
             composable(Screen.Wishlist.route) {
                 WishlistScreen(
                     productListViewModel = productViewModel,
@@ -134,7 +139,6 @@ fun MainScreen(
                     navController = navController
                 )
             }
-            // product detail
             composable(
                 route = "detail/{productId}",
                 arguments = listOf(navArgument("productId") { type = NavType.IntType })
@@ -148,10 +152,10 @@ fun MainScreen(
                     onBackClick = { navController.popBackStack() }
                 )
             }
-            // cart
             composable(Screen.Cart.route) {
                 CartScreen(
                     viewModel = cartViewModel,
+                    currentUser = currentUser,
                     onBackClick = { navController.popBackStack() },
                     onGoShoppingClick = {
                         navController.navigate(Screen.Home.route) {
@@ -162,9 +166,23 @@ fun MainScreen(
                     }
                 )
             }
-            // activity
             composable(Screen.Activity.route) {
-                ActivityScreen()
+                ActivityScreen(
+                    navController = navController,
+                    currentUser = currentUser,
+                    isDarkMode = isDarkMode,
+                    onToggleDarkMode = onToggleDarkMode,
+                    onLogout = {
+                        cartViewModel.clearCart()
+                        authViewModel.logout()
+                    }
+                )
+            }
+            composable("my_orders") {
+                MyOrdersScreen(
+                    userId = currentUser.id,
+                    onBackClick = { navController.popBackStack() }
+                )
             }
         }
     }

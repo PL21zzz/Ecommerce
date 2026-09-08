@@ -51,7 +51,7 @@ fun ProductDetailScreen(
         bottomBar = {
             DetailBottomBar(
                 price = product.price,
-                onBuyNowClick = { cartViewModel.addToCart(product) }
+                onBuyNowClick = { cartViewModel.addToCart(product, selectedSize) }
             )
         }
     ) { paddingValues ->

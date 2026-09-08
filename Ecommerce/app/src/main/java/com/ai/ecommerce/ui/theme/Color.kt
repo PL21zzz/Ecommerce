@@ -1,25 +1,33 @@
 package com.ai.ecommerce.ui.theme
 
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-// 1. Màu chủ đạo (Primary) - Màu nâu đà trầm ấm của hạt coffee (Chữ tiêu đề, các mảng lớn)
+// 1. Màu chủ đạo (Primary)
 val CoffeeDark = Color(0xFF2F2D2C)
 
-// 2. Màu nhấn (Secondary/Accent) - Màu cam đất/nâu sáng của nút "Get Started", "Order"
+// 2. Màu nhấn (Secondary/Accent) - Màu cam đất
 val CoffeeOrange = Color(0xFFC67C4E)
 
-// 3. Màu nền tổng thể (Background) - Màu trắng kem/xám nhạt mịn màng phía sau các thẻ
-val BackgroundLight = Color(0xFFF9F9F9)
+// 3. Màu nền tổng thể (Background) - Động theo Theme (Trắng khi Light, Đen khi Dark)
+val BackgroundLight: Color
+    @Composable get() = MaterialTheme.colorScheme.background
 
-// 4. Màu nền của các thẻ Card (Surface) - Màu trắng tinh của các ô chứa sản phẩm, ô search
-val SurfaceLight = Color(0xFFFFFFFF)
+// 4. Màu nền của các thẻ Card (Surface) - Động theo Theme (Trắng khi Light, Đen xám khi Dark)
+val SurfaceLight: Color
+    @Composable get() = MaterialTheme.colorScheme.surface
 
-// 5. Màu chữ (Text)
-val TextPrimary = Color(0xFF2F2D2C)   // Chữ đen nâu đà đậm (Tên món, giá tiền)
-val TextSecondary = Color(0xFF9B9B9B) // Chữ xám phụ (Mô tả, đánh giá sao nhạt)
+// 5. Màu chữ chính (TextPrimary) - Động theo Theme (Đen khi Light, Trắng khi Dark)
+val TextPrimary: Color
+    @Composable get() = MaterialTheme.colorScheme.onBackground
 
-// 6. Màu đường viền hoặc các nút chọn phụ (Ví dụ nút Pick Up/Deliver)
-val BorderColor = Color(0xFFEAEAEA)
+// 6. Màu chữ phụ
+val TextSecondary = Color(0xFF9B9B9B)
 
-val CoffeeOrangeLight = Color(0xFFFFF5EE) // Nền nhạt cho Size được chọn
-val RatingYellow = Color(0xFFFBBE21)   // Màu vàng ngôi sao
+// 7. Màu đường viền - Động theo Theme
+val BorderColor: Color
+    @Composable get() = MaterialTheme.colorScheme.outline
+
+val CoffeeOrangeLight = Color(0xFFFFF5EE)
+val RatingYellow = Color(0xFFFBBE21)

@@ -4,8 +4,8 @@ plugins {
     id("com.google.dagger.hilt.android") version "2.59.2"
     id("com.google.devtools.ksp") version "2.0.21-1.0.27"
     alias(libs.plugins.kotlin.android)
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.0.21"
-    }
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.2.10"
+}
 
 android {
     namespace = "com.ai.ecommerce"
@@ -31,14 +31,14 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     buildFeatures {
         compose = true
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
 }
 
@@ -62,26 +62,19 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.navigation:navigation-compose:2.8.5")
 
-    // 1. Hilt (Chuyển sang dùng ksp xử lý sinh code tự động)
+    // Hilt (KSP)
     implementation("com.google.dagger:hilt-android:2.59.2")
     ksp("com.google.dagger:hilt-compiler:2.59.2")
     implementation("androidx.hilt:hilt-navigation-compose:1.3.0")
 
-    // 2. Retrofit
+    // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
 
-    // 3. Room (Chuyển sang dùng ksp xử lý)
-    implementation("androidx.room:room-runtime:2.6.1")
-    implementation("androidx.room:room-ktx:2.6.1")
-    ksp("androidx.room:room-compiler:2.6.1")
-
-    // 4. Navigation
-    implementation("androidx.navigation:navigation-compose:2.7.7")
-
-    // 5. Coil
+    // Coil
     implementation("io.coil-kt:coil-compose:2.6.0")
 
+    // Ktor Client
     implementation("io.ktor:ktor-client-core:2.3.7")
     implementation("io.ktor:ktor-client-cio:2.3.7")
     implementation("io.ktor:ktor-client-content-negotiation:2.3.7")

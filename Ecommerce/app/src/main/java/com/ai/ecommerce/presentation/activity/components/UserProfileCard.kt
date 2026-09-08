@@ -2,7 +2,16 @@ package com.ai.ecommerce.presentation.activity.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -26,7 +35,11 @@ import com.ai.ecommerce.ui.theme.TextPrimary
 import com.ai.ecommerce.ui.theme.TextSecondary
 
 @Composable
-fun UserProfileCard(modifier: Modifier = Modifier) {
+fun UserProfileCard(
+    name: String,
+    email: String,
+    modifier: Modifier = Modifier
+) {
     Surface(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
@@ -37,7 +50,6 @@ fun UserProfileCard(modifier: Modifier = Modifier) {
             modifier = Modifier.padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Khối Avatar có nút chỉnh sửa nhỏ bám góc
             Box(modifier = Modifier.size(100.dp)) {
                 Image(
                     painter = rememberAsyncImagePainter("https://res.cloudinary.com/dypm5avrx/image/upload/v1781580379/pedri_qrm4sh.jpg"),
@@ -64,22 +76,20 @@ fun UserProfileCard(modifier: Modifier = Modifier) {
             }
 
             Spacer(modifier = Modifier.height(12.dp))
-            Text(text = "Nguyễn Tuấn Phong", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = TextPrimary)
-            Text(text = "Premium Member", fontSize = 14.sp, color = TextSecondary)
+            Text(text = name, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = TextPrimary)
+            Text(text = email, fontSize = 14.sp, color = TextSecondary)
 
             Spacer(modifier = Modifier.height(20.dp))
-
-            // Khối hiển thị 3 cột chỉ số: Orders, Points, Coupons
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                StatColumn(value = "12", label = "Orders")
+                StatColumn(value = "-", label = "Orders")
                 Box(modifier = Modifier.width(1.dp).height(32.dp).background(Color(0xFFEAEAEA)))
-                StatColumn(value = "2.4k", label = "Points")
+                StatColumn(value = "0", label = "Points")
                 Box(modifier = Modifier.width(1.dp).height(32.dp).background(Color(0xFFEAEAEA)))
-                StatColumn(value = "3", label = "Coupons")
+                StatColumn(value = "0", label = "Coupons")
             }
         }
     }
